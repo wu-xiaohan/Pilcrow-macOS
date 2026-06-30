@@ -6,7 +6,7 @@ A native macOS distraction-free Markdown editor, built in SwiftUI + AppKit/TextK
 Pilcrow is a ground-up rewrite of [Apostrophe](https://gitlab.gnome.org/World/apostrophe)
 (the GNOME/GTK editor) — made for calm, focused writing.
 
-Hey friends 👋 — here's what makes it a nice place to write:
+Here's what makes it a nice place to write:
 
 - 🍅 **Built-in Pomodoro timer**, right in the toolbar — focus, break, repeat.
 - 🎧 **Background sounds for reading & writing** — soft instrumental piano, nature loops,
