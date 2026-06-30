@@ -57,6 +57,12 @@ nothing else needs to be installed.
 - **Data safety** — robust encoding detection, external file-change detection with reload,
   and crash-recovery snapshots.
 
+## Documentation
+
+- [`tutorial.md`](tutorial.md) — how to write Markdown (headings, lists, links, tables…).
+- [`instruction.md`](instruction.md) — how to use the app: what every icon means, the
+  writing modes, themes, export, and the full keyboard-shortcut list.
+
 ## Build from source
 
 ### Requirements
