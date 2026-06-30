@@ -1,0 +1,18 @@
+# Generated Xcode project (regenerate with `xcodegen generate`)
+Pilcrow.xcodeproj/
+
+# Build output
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Bundled CLI tools — pandoc is >250 MB (past GitHub's 100 MB file limit);
+# recreated from Homebrew by scripts/prepare-assets.sh, not committed.
+Pilcrow/Resources/Tools/
+
+.DS_Store
+**/.DS_Store
+
+# Cloud-sync conflict copies (never commit these)
+*conflicted copy*

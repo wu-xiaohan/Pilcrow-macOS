@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- App Sandbox is intentionally OFF for now: the editor runs bundled
+	     pandoc/typst via Process for preview and export, which the sandbox
+	     forbids. Distribution targets Developer ID + hardened runtime (which
+	     permits spawning child processes). A sandboxed Mac App Store variant
+	     would require an XPC/helper redesign. -->
+</dict>
+</plist>

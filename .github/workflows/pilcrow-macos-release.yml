@@ -1,0 +1,54 @@
+name: Build Pilcrow (macOS)
+
+# Builds the self-contained, ad-hoc-signed Pilcrow.app and attaches Pilcrow.zip
+# to the GitHub Release for the pushed tag. Also runnable on demand.
+#
+# Tag a release with:  git tag macos-v0.1.0 && git push origin macos-v0.1.0
+on:
+  push:
+    tags: ["macos-v*", "v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to attach assets to the release
+
+jobs:
+  build:
+    runs-on: macos-14        # Apple Silicon runner — matches the bundled arm64 tools
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: brew install xcodegen pandoc typst
+
+      - name: Build Release (bundles pandoc/typst, ad-hoc signs, zips)
+        run: ./scripts/build-release.sh
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pilcrow-macos
+          path: build/Pilcrow.zip
+
+      - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/Pilcrow.zip
+          body: |
+            ## Pilcrow for macOS
+
+            A native, distraction-free Markdown editor. **Self-contained** — pandoc & typst
+            are bundled, so there's nothing else to install.
+
+            ### Install (Apple Silicon, macOS 14+)
+            1. Download **Pilcrow.zip** below and unzip it.
+            2. Move **Pilcrow.app** to `/Applications`.
+            3. First launch — one-time Gatekeeper step (the app is ad-hoc signed, not notarized):
+               - **Right-click** (Control-click) the app → **Open** → **Open**; or
+               - open it once, then **System Settings → Privacy & Security → Open Anyway**; or
+               - Terminal: `xattr -dr com.apple.quarantine /Applications/Pilcrow.app`
+
+            After the first approval it opens normally.
+
+            GPLv3 — full Corresponding Source is this repository at the tagged commit.

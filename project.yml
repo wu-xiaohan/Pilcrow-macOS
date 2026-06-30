@@ -1,0 +1,80 @@
+name: Pilcrow
+
+options:
+  bundleIdPrefix: com.wuxiaohan
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Automatic
+    # Build/run locally without a paid team; flip to Developer ID for release.
+    CODE_SIGN_IDENTITY: "-"
+
+targets:
+  Pilcrow:
+    type: application
+    platform: macOS
+    sources:
+      - path: Pilcrow
+        excludes:
+          - "Resources/Info.plist"
+          - "Resources/Pilcrow.entitlements"
+          - "Resources/Sounds"
+          - "Resources/Tools"
+      - path: Pilcrow/Resources/Sounds
+        type: folder
+        buildPhase: resources
+      # Self-contained CLI helpers (pandoc, typst, libgmp) copied verbatim into
+      # Contents/Resources/Tools so recipients need nothing installed.
+      - path: Pilcrow/Resources/Tools
+        type: folder
+        buildPhase: resources
+      # Ship the GPLv3 text inside the bundle (GPL §6) — signed as part of the build.
+      - path: LICENSE
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_NAME: Pilcrow
+        PRODUCT_BUNDLE_IDENTIFIER: com.wuxiaohan.Pilcrow
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Pilcrow/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Pilcrow/Resources/Pilcrow.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        COMBINE_HIDPI_IMAGES: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/../Frameworks"
+
+  PilcrowTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: Pilcrow
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wuxiaohan.PilcrowTests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Pilcrow:
+    build:
+      targets:
+        Pilcrow: all
+        PilcrowTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - PilcrowTests
