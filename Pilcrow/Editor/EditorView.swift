@@ -165,7 +165,8 @@ struct EditorView: View {
     }
 
     private var previewPane: some View {
-        PreviewWebView(html: preview.html, backgroundColor: theme.background)
+        PreviewWebView(html: preview.html, backgroundColor: theme.background,
+                       baseDirectory: fileURL?.deletingLastPathComponent())
     }
 
     @ToolbarContentBuilder private var toolbarContent: some ToolbarContent {

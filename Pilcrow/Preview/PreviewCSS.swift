@@ -32,10 +32,10 @@ enum PreviewCSS {
         var families: [String] = []
         for value in [latinFont, cjkFont] {
             if let info = fontInfo(value) {
-                // Served by BundledFontSchemeHandler — WKWebView won't load file://
+                // Served by PreviewSchemeHandler — WKWebView won't load file://
                 // fonts cross-origin (CORS), so we use a custom scheme instead.
                 faces += "@font-face { font-family: '\(info.css)'; "
-                    + "src: url('\(BundledFontSchemeHandler.origin)/\(info.file).ttf') format('truetype'); }\n"
+                    + "src: url('\(PreviewScheme.fontOrigin)/\(info.file).ttf') format('truetype'); }\n"
                 families.append("'\(info.css)'")
             }
         }
@@ -85,7 +85,7 @@ enum PreviewCSS {
 
     /// Maps a font setting value to its CSS family + bundled file base name (nil
     /// for Default/System, which use the platform stack). The `.ttf` is served by
-    /// `BundledFontSchemeHandler`.
+    /// `PreviewSchemeHandler`.
     private static func fontInfo(_ value: String) -> (css: String, file: String)? {
         let map: [String: (css: String, file: String)] = [
             "Lora": ("Lora", "Lora"),
