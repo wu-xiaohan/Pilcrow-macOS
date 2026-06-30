@@ -1,13 +1,28 @@
 # Pilcrow
 
+![Pilcrow — the editor and live preview, side by side](Readme_fig.png)
+
 A native macOS distraction-free Markdown editor, built in SwiftUI + AppKit/TextKit.
 Pilcrow is a ground-up rewrite of [Apostrophe](https://gitlab.gnome.org/World/apostrophe)
-(the GNOME/GTK editor) — a personal GPLv3 fork whose one divergence from upstream is an
-adjustable editor column width (*characters per line*).
+(the GNOME/GTK editor) — made for calm, focused writing.
 
-> Status: **feature-complete.** Builds Debug + Release, full XCTest suite passing.
-> See [`docs/SPEC.md`](docs/SPEC.md) for the original plan, [`docs/SPEC-review.md`](docs/SPEC-review.md)
-> and [`docs/FEATURE-GAP.md`](docs/FEATURE-GAP.md) for the parity analyses.
+Hey friends 👋 — here's what makes it a nice place to write:
+
+- 🍅 **Built-in Pomodoro timer**, right in the toolbar — focus, break, repeat.
+- 🎧 **Background sounds for reading & writing** — soft instrumental piano, nature loops,
+  or load your own music. It auto-pauses with the timer and plays calm music on breaks.
+- 🎨 **Cozy themes and fonts** — soft color palettes (or pick your own), plus independent
+  Latin + CJK fonts that render in both the editor *and* the live preview.
+- 📖 **A built-in Markdown tutorial** if you're new to it, and a how-to guide for the app —
+  both one click away in the menu (and the guide opens automatically on first launch).
+- 🧠 **ADHD-friendly Bionic Reading** that bolds the start of each word to keep your eyes
+  on track — alongside a sentence-dimming **Focus mode** and a write-only **Hemingway mode**.
+- 👀 **Live preview & export** — see it rendered as you type, and export to PDF, HTML,
+  Word, and ~19 other formats.
+
+Plus native find & replace, a live word-count, an adjustable writing-column width, and
+crash-safe autosave. It's **free and self-contained** — `pandoc` and `typst` are bundled
+inside, so there's nothing to install. Just download, open, and write.
 
 ## Install (no Apple Developer account needed)
 
@@ -26,42 +41,19 @@ open it.
      xattr -dr com.apple.quarantine /Applications/Pilcrow.app
      ```
 
-After the first approval it opens normally. The app is **fully self-contained** —
-`pandoc` and `typst` (used for preview, PDF, and export) are bundled inside, so
-nothing else needs to be installed.
+After the first approval it opens normally.
 
 > **Apple Silicon (M-series) required** for the prebuilt download — the bundled
 > `pandoc`/`typst` are arm64. On an Intel Mac, build from source (below): the build
 > bundles whatever architecture your Homebrew `pandoc`/`typst` are.
-
-## Features
-
-- **Editor** — centered, width-constrained monospace column with the dynamic font ramp;
-  live Markdown syntax highlighting (23 ported regexes); smart editing (auto-pair, list
-  continuation, Tab/Shift-Tab list indent, format toggles); **Bionic reading**.
-- **Format menu + bottom-left collapsible toolbar** — headings, lists, checklist,
-  blockquote, code block, horizontal rule, link, image.
-- **Live preview** — pandoc → WKWebView, theme-matched CSS, half/full/half-height layouts;
-  honors the per-script fonts and column width.
-- **Modes** — focus mode (sentence dimming + typewriter scroll), Hemingway, fullscreen
-  with auto-hiding header.
-- **Color themes** — System / White / Dark / Sepia (default) + six soft palettes, a
-  custom "Pick Your Color" window, and two favourites pinned to the menu (with swatches).
-- **Per-script fonts** — independent Latin + CJK fonts (bundled Lora, Shantell Sans,
-  Noto Sans SC, Ma Shan Zheng), applied in editor and preview.
-- **Pomodoro timer** — header countdown + popover (manual durations, Skip), notifications.
-- **Background sounds** — piano / nature / your-own-music playlists, Pomodoro-synced with
-  calm break music; click = play, double-click = next, triple-click = volume; volume + a
-  managed music list live in Preferences.
-- **Stats bar**, native **Find/Replace**, **export** (19 pandoc formats + Typst PDF + Copy HTML).
-- **Data safety** — robust encoding detection, external file-change detection with reload,
-  and crash-recovery snapshots.
 
 ## Documentation
 
 - [`tutorial.md`](tutorial.md) — how to write Markdown (headings, lists, links, tables…).
 - [`instruction.md`](instruction.md) — how to use the app: what every icon means, the
   writing modes, themes, export, and the full keyboard-shortcut list.
+
+Both are also built into the app — open them any time from the **•••** menu.
 
 ## Build from source
 
@@ -95,6 +87,8 @@ xcodegen generate             # writes Pilcrow.xcodeproj (git-ignored)
 open Pilcrow.xcodeproj         # ⌘R to run, ⌘U for tests
 ```
 
+Design notes live in [`docs/`](docs) (`SPEC.md`, `SPEC-review.md`, `FEATURE-GAP.md`).
+
 ## Package & share a release
 
 ```sh
@@ -105,8 +99,8 @@ Then create a [GitHub Release](../../releases) and upload `build/Pilcrow.zip`. R
 follow the [Install](#install-no-apple-developer-account-needed) steps above — no Apple
 account, no notarization required on either side.
 
-`.github/workflows/pilcrow-macos-release.yml` automates this: push a **`macos-v0.1.0`**
-(or `v0.1.0`) tag, or run the workflow manually, and CI builds on an Apple-Silicon runner
+`.github/workflows/pilcrow-macos-release.yml` automates this: push a **`macos-v0.1.1`**
+(or `v0.1.1`) tag, or run the workflow manually, and CI builds on an Apple-Silicon runner
 and attaches `Pilcrow.zip` to that release.
 
 ### Optional: notarized Developer ID build
