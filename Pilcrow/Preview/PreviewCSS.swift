@@ -32,7 +32,10 @@ enum PreviewCSS {
         var families: [String] = []
         for value in [latinFont, cjkFont] {
             if let info = fontInfo(value) {
-                faces += "@font-face { font-family: '\(info.css)'; src: url('\(info.url.absoluteString)'); }\n"
+                // Served by BundledFontSchemeHandler — WKWebView won't load file://
+                // fonts cross-origin (CORS), so we use a custom scheme instead.
+                faces += "@font-face { font-family: '\(info.css)'; "
+                    + "src: url('\(BundledFontSchemeHandler.origin)/\(info.file).ttf') format('truetype'); }\n"
                 families.append("'\(info.css)'")
             }
         }
@@ -80,9 +83,10 @@ enum PreviewCSS {
         """
     }
 
-    /// Maps a font setting value to its CSS family + bundled file URL (nil for
-    /// Default/System, which use the platform stack).
-    private static func fontInfo(_ value: String) -> (css: String, url: URL)? {
+    /// Maps a font setting value to its CSS family + bundled file base name (nil
+    /// for Default/System, which use the platform stack). The `.ttf` is served by
+    /// `BundledFontSchemeHandler`.
+    private static func fontInfo(_ value: String) -> (css: String, file: String)? {
         let map: [String: (css: String, file: String)] = [
             "Lora": ("Lora", "Lora"),
             "Shantell Sans": ("Shantell Sans", "ShantellSans"),
@@ -90,7 +94,7 @@ enum PreviewCSS {
             "Ma Shan Zheng": ("Ma Shan Zheng", "MaShanZheng-Regular"),
         ]
         guard let entry = map[value],
-              let url = Bundle.main.url(forResource: entry.file, withExtension: "ttf") else { return nil }
-        return (entry.css, url)
+              Bundle.main.url(forResource: entry.file, withExtension: "ttf") != nil else { return nil }
+        return entry
     }
 }

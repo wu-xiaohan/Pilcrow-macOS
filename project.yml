@@ -9,7 +9,7 @@ options:
 
 settings:
   base:
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "0.1.1"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.0"
     CODE_SIGN_STYLE: Automatic
@@ -37,6 +37,11 @@ targets:
         buildPhase: resources
       # Ship the GPLv3 text inside the bundle (GPL §6) — signed as part of the build.
       - path: LICENSE
+        buildPhase: resources
+      # In-app help docs, opened from the main menu and on first launch.
+      - path: tutorial.md
+        buildPhase: resources
+      - path: instruction.md
         buildPhase: resources
     settings:
       base:

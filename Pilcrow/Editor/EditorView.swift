@@ -23,7 +23,9 @@ struct EditorView: View {
     @AppStorage(SettingsKey.favouriteThemes) private var favouriteThemes = "sepia,sage"
     @AppStorage(SettingsKey.latinFont) private var latinFont = "Default"
     @AppStorage(SettingsKey.cjkFont) private var cjkFont = "Default"
+    @AppStorage("didShowWelcome") private var didShowWelcome = false
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openDocument) private var openDocument
 
     @StateObject private var preview = PreviewController()
     @StateObject private var statsController = StatsController()
@@ -68,7 +70,7 @@ struct EditorView: View {
             .onChange(of: latinFont) { _, _ in updatePreview() }
             .onChange(of: cjkFont) { _, _ in updatePreview() }
             .onChange(of: fileURL) { _, url in external.start(url: url); recovery.begin(url: url, currentText: text) }
-            .onAppear { updatePreview(); statsController.update(text); external.start(url: fileURL); recovery.begin(url: fileURL, currentText: text) }
+            .onAppear { updatePreview(); statsController.update(text); external.start(url: fileURL); recovery.begin(url: fileURL, currentText: text); showWelcomeIfNeeded() }
             .onDisappear { external.stop() }
     }
 
@@ -214,6 +216,9 @@ struct EditorView: View {
                 Toggle("Hemingway Mode", isOn: $hemingwayMode)
                 Toggle("Bionic Reading", isOn: $bionicReading)
                 Divider()
+                Button("Markdown Tutorial") { openHelp(HelpDocs.tutorial) }
+                Button("How to Use Pilcrow") { openHelp(HelpDocs.instruction) }
+                Divider()
                 SettingsLink { Text("Preferences…") }
             } label: {
                 Label("Menu", systemImage: "ellipsis.circle")
@@ -227,6 +232,19 @@ struct EditorView: View {
         preview.request(markdown: text, theme: theme,
                         charactersPerLine: charactersPerLine, bionic: bionicReading,
                         latinFont: latinFont, cjkFont: cjkFont)
+    }
+
+    /// Opens a bundled help doc (tutorial / instruction) in a new editor window.
+    private func openHelp(_ resource: String) {
+        guard let url = HelpDocs.openableURL(resource) else { return }
+        Task { try? await openDocument(at: url) }
+    }
+
+    /// On the very first launch, open the instruction guide so new users see it.
+    private func showWelcomeIfNeeded() {
+        guard !didShowWelcome else { return }
+        didShowWelcome = true
+        openHelp(HelpDocs.instruction)
     }
 
     private var preferredColorScheme: ColorScheme? {
