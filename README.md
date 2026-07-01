@@ -24,6 +24,42 @@ Plus native find & replace, a live word-count, an adjustable writing-column widt
 crash-safe autosave. It's **free and self-contained** — `pandoc` and `typst` are bundled
 inside, so there's nothing to install. Just download, open, and write.
 
+## Which release should I download?
+
+- **[v0.1.2](../../releases/tag/macos-v0.1.2) — the editor only.** Fully self-contained
+  (bundles `pandoc` + `typst`), nothing else to install. **Pick this if you just want the
+  Markdown editor.**
+- **[Latest (v0.2.0+)](../../releases/latest) — adds PDF → Markdown import.** Everything
+  above, plus a menu command that imports PDFs (handy for academic papers). It needs a small
+  Python helper installed (see below). **Pick this only if you want PDF import.**
+
+## Importing PDFs (v0.2.0+)
+
+**•••** menu → **Import PDF as Markdown…** converts a PDF into a new Markdown document.
+
+**Setup (once):** it shells out to [`pymupdf4llm`](https://github.com/pymupdf/RAG), a Python
+tool that is *not* bundled:
+
+```sh
+python3.10 -m venv ~/.pilcrow-pdf-venv
+~/.pilcrow-pdf-venv/bin/pip install pymupdf4llm
+```
+
+(If it isn't installed, the command just shows this setup prompt.)
+
+**How it works:** `pymupdf4llm` extracts the PDF's text in reading order, its tables, and its
+figures (to image files); then Pilcrow tidies the result — moving footnotes and figures to
+the end with two-way jump links (⇧⌘P preview), stitching footnotes that split across pages,
+and leaving "moved to the end" markers where each was.
+
+**Limitations** — PDF is a lossy source, so this is best-effort:
+- Needs the Python helper above, so it's a **personal-use** feature, not part of the
+  self-contained build.
+- **Text-based PDFs only** — scanned/image PDFs have no text to extract (no OCR).
+- Footnote/figure recovery is **heuristic**: footnotes the converter merges mid-paragraph
+  can't be recovered, and complex tables, multi-column layouts, and equations may come
+  through imperfectly.
+
 ## Install (no Apple Developer account needed)
 
 Pilcrow is distributed as an **ad-hoc-signed** app — free to build and share, but

@@ -41,13 +41,24 @@ final class PreviewController: ObservableObject {
     }
 
     private static func inject(css: String, bionic: Bool, into html: String) -> String {
-        var head = "<style>\n\(css)\n</style>"
+        var head = "<style>\n\(css)\n</style>\n<script>\n\(anchorScript)\n</script>"
         if bionic { head += "\n<script>\n\(bionicScript)\n</script>" }
         if let range = html.range(of: "</head>") {
             return html.replacingCharacters(in: range, with: "\(head)\n</head>")
         }
         return head + html
     }
+
+    /// Smooth in-page scrolling for `#` anchor links (footnote jump navigation), so
+    /// they work even though the preview is loaded via a custom URL scheme.
+    private static let anchorScript = #"""
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    });
+    """#
 
     /// Bionic reading for the preview: bolds the leading portion of each word,
     /// skipping code/pre. Builds DOM text nodes (no innerHTML) to stay safe.

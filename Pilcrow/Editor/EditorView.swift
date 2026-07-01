@@ -217,6 +217,8 @@ struct EditorView: View {
                 Toggle("Hemingway Mode", isOn: $hemingwayMode)
                 Toggle("Bionic Reading", isOn: $bionicReading)
                 Divider()
+                Button("Import PDF as Markdown…") { importPDF() }
+                Divider()
                 Button("Markdown Tutorial") { openHelp(HelpDocs.tutorial) }
                 Button("How to Use Pilcrow") { openHelp(HelpDocs.instruction) }
                 Divider()
@@ -239,6 +241,21 @@ struct EditorView: View {
     private func openHelp(_ resource: String) {
         guard let url = HelpDocs.openableURL(resource) else { return }
         Task { try? await openDocument(at: url) }
+    }
+
+    /// Import a PDF as Markdown via MarkItDown (preserves tables; needs the CLI).
+    private func importPDF() {
+        guard let input = PyMuPDF4LLMRunner.pickInputFile() else { return }
+        Task {
+            do {
+                let url = try await Task.detached(priority: .userInitiated) {
+                    try PyMuPDF4LLMRunner.convert(input)
+                }.value
+                try? await openDocument(at: url)
+            } catch {
+                PyMuPDF4LLMRunner.presentError(error)
+            }
+        }
     }
 
     /// On the very first launch, open the instruction guide so new users see it.
